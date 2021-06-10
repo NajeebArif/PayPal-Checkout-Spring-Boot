@@ -2,6 +2,7 @@ package narif.poc.paypal;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,13 +23,18 @@ public class OrderController {
         this.paymentService = paymentService;
     }
 
+    private String orderId = "";
+
     @GetMapping
-    public String orderPage(){
+    public String orderPage(Model model){
+        model.addAttribute("orderId",orderId);
         return "order";
     }
 
     @GetMapping("/capture")
     public String captureOrder(@RequestParam String token){
+        //FIXME(Never Do this either put it in proper scope or in DB)
+        orderId = token;
         paymentService.captureOrder(token);
         return "redirect:/orders";
     }
