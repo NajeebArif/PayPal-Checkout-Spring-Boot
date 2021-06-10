@@ -1,0 +1,3 @@
+paypal:
+  clientId: ${paypal.clientId}
+  clientSecret: ${paypal.secret}
