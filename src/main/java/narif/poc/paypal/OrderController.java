@@ -30,7 +30,7 @@ public class OrderController {
     @GetMapping("/capture")
     public String captureOrder(@RequestParam String token){
         paymentService.captureOrder(token);
-        return "redirect:/order";
+        return "redirect:/orders";
     }
 
     @PostMapping
