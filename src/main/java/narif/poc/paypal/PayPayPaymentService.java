@@ -5,6 +5,7 @@ import com.paypal.core.PayPalHttpClient;
 import com.paypal.http.HttpResponse;
 import com.paypal.orders.*;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @Service
+@Slf4j
 public class PayPayPaymentService implements PaymentService{
 
     private final String APPROVE_LINK_REL = "approve";
@@ -33,6 +35,14 @@ public class PayPayPaymentService implements PaymentService{
         final Order order = orderHttpResponse.result();
         LinkDescription approveUri = extractApprovalLink(order);
         return new CreatedOrder(order.id(),URI.create(approveUri.href()));
+    }
+
+    @Override
+    @SneakyThrows
+    public void captureOrder(String orderId) {
+        final OrdersCaptureRequest ordersCaptureRequest = new OrdersCaptureRequest(orderId);
+        final HttpResponse<Order> httpResponse = payPalHttpClient.execute(ordersCaptureRequest);
+        log.info("Order Capture Status: {}",httpResponse.result().status());
     }
 
     private OrderRequest createOrderRequest(Double totalAmount, URI returnUrl) {

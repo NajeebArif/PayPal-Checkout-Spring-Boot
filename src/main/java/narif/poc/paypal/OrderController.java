@@ -28,15 +28,16 @@ public class OrderController {
     }
 
     @GetMapping("/capture")
-    public String captureOrder(){
-        return "";
+    public String captureOrder(@RequestParam String token){
+        paymentService.captureOrder(token);
+        return "redirect:/order";
     }
 
     @PostMapping
     public String placeOrder(@RequestParam Double totalAmount, HttpServletRequest request){
         final URI returnUrl = buildReturnUrl(request);
         CreatedOrder createdOrder = paymentService.createOrder(totalAmount, returnUrl);
-        return "";
+        return "redirect:"+createdOrder.getApprovalLink();
     }
 
     private URI buildReturnUrl(HttpServletRequest request) {
